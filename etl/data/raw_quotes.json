@@ -1,0 +1,26 @@
+[
+  {
+    "symbol": "AAPL",
+    "price": 267.46,
+    "volume": 45018260,
+    "previous_close": 272.41,
+    "change": -4.95,
+    "change_percent": "-1.8171%"
+  },
+  {
+    "symbol": "MSFT",
+    "price": 507.49,
+    "volume": 19092752,
+    "previous_close": 510.18,
+    "change": -2.69,
+    "change_percent": "-0.5273%"
+  },
+  {
+    "symbol": "TSLA",
+    "price": 408.92,
+    "volume": 102214259,
+    "previous_close": 404.35,
+    "change": 4.57,
+    "change_percent": "1.1302%"
+  }
+]

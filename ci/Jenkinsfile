@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo "Checking out the repository..."
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                bat 'pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Unit Tests (pytest)') {
+            steps {
+                bat 'pytest -q'
+            }
+        }
+
+        stage('Run ETL Pipeline') {
+            steps {
+                bat 'python -m etl.fetch_data'
+                bat 'python -m etl.validate_data'
+                bat 'python -m etl.load_data'
+            }
+        }
+
+        stage('API Smoke Test') {
+            steps {
+                bat 'newman run tests/test_api.postman_collection.json'
+            }
+        }
+
+        stage('Done') {
+            steps {
+                echo "Pipeline completed successfully!"
+            }
+        }
+    }
+}

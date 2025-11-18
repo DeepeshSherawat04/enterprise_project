@@ -1,0 +1,20 @@
+api:
+  base_url: "https://www.alphavantage.co/query"
+  key: "20UT2MBLH4A64SJC"
+
+database:
+  host: "localhost"
+  port: 5432
+  user: "postgres"
+  password: "YOUR_POSTGRES_PASSWORD"
+  name: "enterprise_data_demo"
+
+proxy:
+  http: ""
+  https: ""
+
+etl:
+  symbols:
+    - AAPL
+    - MSFT
+    - TSLA
