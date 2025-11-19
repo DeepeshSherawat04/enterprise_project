@@ -1,9 +1,10 @@
 pipeline {
     agent any
 
-    // Make root folder (workspace) visible to Python in ALL stages
     environment {
-        PYTHONPATH = "${WORKSPACE}"
+        // Root of repo in Jenkins workspace
+        PROJECT_ROOT = "${WORKSPACE}"
+        PYTHONPATH   = "${WORKSPACE}"
     }
 
     stages {
@@ -11,13 +12,15 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo "Checking out the repository..."
+                // Declarative checkout is done automatically above,
+                // so we just log here.
             }
         }
 
         stage('Install Dependencies') {
             steps {
                 bat """
-                cd /d %WORKSPACE%
+                cd /d %PROJECT_ROOT%
                 pip install -r requirements.txt
                 """
             }
@@ -26,7 +29,7 @@ pipeline {
         stage('Run Unit Tests (pytest)') {
             steps {
                 bat """
-                cd /d %WORKSPACE%
+                cd /d %PROJECT_ROOT%
                 echo Using PYTHONPATH=%PYTHONPATH%
                 pytest -q
                 """
@@ -36,7 +39,7 @@ pipeline {
         stage('Run ETL Pipeline') {
             steps {
                 bat """
-                cd /d %WORKSPACE%
+                cd /d %PROJECT_ROOT%
                 echo Running ETL with PYTHONPATH=%PYTHONPATH%
                 python -m etl.fetch_data
                 python -m etl.validate_data
@@ -47,18 +50,35 @@ pipeline {
 
         stage('API Smoke Test') {
             steps {
-                // simple placeholder – we can improve later
                 bat """
-                cd /d %WORKSPACE%
-                echo API smoke test placeholder (FastAPI health can be checked here)
+                cd /d %PROJECT_ROOT%
+                echo Starting API for smoke test...
+                start /B uvicorn api.main:app --host 127.0.0.1 --port 9000
+
+                rem Give the server a few seconds to start
+                timeout /t 5 /nobreak >NUL
+
+                echo Hitting /health endpoint...
+                curl -s -o NUL -w "HTTP_STATUS=%%{http_code}" http://127.0.0.1:9000/health
+
+                rem (Optional) kill uvicorn after test if needed
                 """
             }
         }
 
         stage('Done') {
             steps {
-                echo "FinDataFlow CI pipeline completed."
+                echo "Pipeline completed successfully ✅"
             }
+        }
+    }
+
+    post {
+        success {
+            echo "FinDataFlow-CI: SUCCESS 🎉"
+        }
+        failure {
+            echo "FinDataFlow-CI: FAILED ❌ – check console output"
         }
     }
 }
