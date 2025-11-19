@@ -1,4 +1,4 @@
-from utils import load_json, save_json, RAW_FILE, CLEAN_FILE
+from etl.utils import load_json, save_json, RAW_FILE, CLEAN_FILE
 import logging
 
 REQUIRED_FIELDS = ["symbol", "price", "volume"]

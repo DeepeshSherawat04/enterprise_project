@@ -1,4 +1,4 @@
-from utils import load_json, CLEAN_FILE
+from etl.utils import load_json, CLEAN_FILE
 from db.connection import get_connection
 import logging
 

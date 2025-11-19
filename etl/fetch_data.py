@@ -1,7 +1,7 @@
 # etl/fetch_data.py
 import requests
 import logging
-from utils import load_config, save_json, RAW_FILE
+from etl.utils import load_config, save_json, RAW_FILE
 
 def fetch_quotes():
     cfg = load_config()
